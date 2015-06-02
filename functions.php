@@ -11,8 +11,8 @@
 
 /**
  * Theme setup.
- * 
- * Attach all of the site-wide functions to the correct hooks and filters. All 
+ *
+ * Attach all of the site-wide functions to the correct hooks and filters. All
  * the functions themselves are defined below this setup function.
  *
  * @since 2.0.0
@@ -32,7 +32,7 @@ function tasty_child_theme_setup() {
 	require_once( get_stylesheet_directory() . '/inc/admin.php'             ); // Admin-side customizations
 	require_once( get_stylesheet_directory() . '/inc/general.php'           ); // General functions and actions
 	require_once( get_stylesheet_directory() . '/inc/autocomplete.php'      ); // Tag autocomplete
-	require_once( get_stylesheet_directory() . '/inc/bookmark-this.php'     ); // Custom bookmarklet
+	// require_once( get_stylesheet_directory() . '/inc/bookmark-this.php'     ); // Custom bookmarklet
 
 	// Theme Supports
 	add_theme_support( 'html5' );
@@ -41,3 +41,15 @@ function tasty_child_theme_setup() {
 
 }
 add_action( 'genesis_setup', 'tasty_child_theme_setup', 15 );
+
+function tasty_display_url( $truncate = true ) {
+	$field = get_post_field( 'post_excerpt', get_the_ID() );
+	if ( ! $field ) {
+		$field = get_post_meta( get_the_ID(), 'bookmark_url', 1 );
+	}
+	if ( $link = esc_url( $field ) ) {
+		return $link;
+	}
+
+	return esc_attr( $truncate && strlen( $field ) > 200 ? substr( $field, 0, 200 ) . ' &hellip;' : $field );
+}

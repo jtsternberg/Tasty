@@ -16,11 +16,12 @@
  * @global array $post
  */
 function tasty_post_admin_print_styles() {
-	wp_register_style( 'tasty-bookmarkthis', CHILD_URL . '/css/bookmark-this.css' );
-	wp_register_style( 'tasty-post',         CHILD_URL . '/css/post.css'          );
+	// wp_register_style( 'tasty-bookmarkthis', CHILD_URL . '/css/bookmark-this.css' );
+	wp_register_style( 'tasty-post', CHILD_URL . '/css/post.css' );
 
-	if( 'post' == get_post_type() )
+	if ( 'post' == get_post_type() ) {
 		wp_enqueue_style( 'tasty-post' );
+	}
 }
 add_action( 'admin_enqueue_scripts', 'tasty_post_admin_print_styles' );
 
@@ -95,8 +96,7 @@ function tasty_custom_columns( $column ) {
 	global $post;
 	switch ( $column ) {
 		case 'link_url':
-			$link = tasty_get_custom_field( '_tasty_link' );
-			echo $link;
+			echo tasty_display_url();
 			break;
 	}
 }
@@ -108,9 +108,9 @@ add_action( 'manage_posts_custom_column', 'tasty_custom_columns' );
  * @since 2.0.0
  */
 function tasty_metaboxes() {
-    add_meta_box( 'tasty_link', __( 'Link', 'ja-tasty-child' ), 'tasty_link_metabox', 'post', 'normal' );
+	add_meta_box( 'tasty_link', __( 'Link', 'ja-tasty-child' ), 'tasty_link_metabox', 'post', 'normal' );
 }
-add_action( 'admin_init', 'tasty_metaboxes');
+add_action( 'admin_init', 'tasty_metaboxes' );
 
 /**
  * Link metabox
@@ -121,36 +121,45 @@ add_action( 'admin_init', 'tasty_metaboxes');
 function tasty_link_metabox() {
 
 	global $post;
-	
+
 	if ( isset( $_GET['u'] ) && isset( $_GET['t'] ) ) {
 		$link = isset( $_GET['u'] ) ? esc_url( $_GET['u'] ) : '';
 		$saved_link = '';
 	} else {
-		$link = get_post_meta( $post->ID, '_tasty_link', true );
+		$link = tasty_display_url( false );
 		$saved_link = $link;
 	}
 
 	wp_nonce_field( 'tasty_link', 'tasty_noncename' );
 
 	// Check for dupes!
-	if ( !empty( $link ) && $link != $saved_link ) {
+	if ( ! empty( $link ) && $link != $saved_link ) {
 		$dupe_args = array(
-			'posts_per_page' => '-1',
-			'meta_key'       => '_tasty_link',
-			'meta_value'     => $link
+			'posts_per_page' => 20,
+			'meta_key'       => 'bookmark_url',
+			'meta_value'     => $link,
 		);
+
 		$dupe = new WP_Query( $dupe_args );
 		while ( $dupe->have_posts() ): $dupe->the_post();
 			echo '<div class="dupe">' . __( 'Page already bookmarked!', 'ja-tasty-child' ) . ' ';
 			edit_post_link( '' . __( '(edit)', 'ja-tasty-child' ) . '' );
-			echo '<br /><a href="' . get_permalink() . '">' . get_the_title() . '</a> '; 
+			echo '<br /><a href="' . get_permalink() . '">' . get_the_title() . '</a> ';
 			the_tags( '<br />' . __( 'Tagged:', 'ja-tasty-child' ) . ' ', ', ' );
 			echo '</div>';
 		endwhile;
 		wp_reset_postdata();
-	} 
+	}
 
-	echo _e( 'Link', 'ja-tasty-child' ) .  '<input name="tasty_link" type="text" style="width:90%" value="' .  $link . '" />';
+	if ( isset( $_GET['jtdebug'] ) ) {
+		echo '<xmp>get_post_field: '. print_r( get_post_field( 'post_excerpt', $post ), true ) .'</xmp>';
+		echo '<xmp>get_post_meta: '. print_r( get_post_meta( get_the_ID(), 'bookmark_url', 1 ), true ) .'</xmp>';
+	}
+
+	?>
+	<label for="excerpt"><?php _e( 'Link', 'ja-tasty-child' ); ?></label>
+	<textarea rows="1" cols="40" name="excerpt" id="excerpt"><?php echo $link; ?></textarea>
+	<?php
 }
 
 /**
@@ -160,28 +169,26 @@ function tasty_link_metabox() {
  * @param  int $post_id
  * @global array $post
  */
-function tasty_link_metabox_save_post( $post_id ){
-
-	global $post;
+function tasty_link_metabox_save_post( $post_id, $post ){
 
 	// Run through permission checks and what not
-    if ( get_post_type() != 'post')
+	if (
+		'post' != $post->post_type
+		|| defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE
+		|| ! wp_verify_nonce( $_POST['tasty_noncename'], 'tasty_link' )
+		|| ! current_user_can( 'edit_post', $post_id )
+	) {
 		return;
+	}
 
-    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
-        return;
+	// We made it this far so let's save
+	$link = esc_url( $_POST['excerpt'] );
+	// let's allow bookmarklets... scary, I know
+	$link = $link ? $link : $_POST['excerpt'];
 
-    if ( !wp_verify_nonce( $_POST['tasty_noncename'], 'tasty_link' ) )
-        return;
-
-    if ( !current_user_can( 'edit_post', $post_id ) )
-    	return;
-
-    // We made it this far so let's save
-	$link = esc_url( $_POST['tasty_link'] );
-	update_post_meta( $post_id, '_tasty_link', $link );
+	update_post_meta( $post_id, 'bookmark_url', $link );
 }
-add_action( 'save_post', 'tasty_link_metabox_save_post' );
+add_action( 'save_post', 'tasty_link_metabox_save_post', 10, 2 );
 
 /**
  * Show message when bookmark was successfully added
@@ -189,7 +196,7 @@ add_action( 'save_post', 'tasty_link_metabox_save_post' );
  * @since 2.0.0
  */
 function tasty_bookmark_confirm() {
-	if ( isset( $_GET['u'] ) && $_GET['u'] == 1 && 'post' == get_post_type() ) {
+	if ( isset( $_GET['u'] ) && 1 == $_GET['u'] && 'post' == get_post_type() ) {
 		?>
 		<div id="bookmark-confirm">
 			<div class="inner"><?php _e( 'Bookmark Saved', 'ja-tasty-child' ); ?> <a href="javascript:window.close();" class="button button-primary button-large"><?php _e( 'Close Window', 'ja-tasty-child' ); ?></a></div>

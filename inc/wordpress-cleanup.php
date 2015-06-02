@@ -12,9 +12,6 @@
 // Remove post thumbnail support
 remove_theme_support( 'post-thumbnails' );
 
-// Disable admin bar
-add_filter( 'show_admin_bar',  '__return_false' );
-
 // Disable visual editor
 add_filter( 'user_can_richedit' , '__return_false' , 50 );
 
@@ -27,7 +24,7 @@ function tasty_remove_admin_menus(){
 	remove_menu_page( 'upload.php'              ); // Media
 	remove_menu_page( 'edit-comments.php'       ); // Comments
 	remove_menu_page( 'edit.php?post_type=page' ); // Pages
-	remove_submenu_page( 'edit.php','edit-tags.php?taxonomy=category' ); // Categories
+	// remove_submenu_page( 'edit.php','edit-tags.php?taxonomy=category' ); // Categories
 }
 add_action( 'admin_menu', 'tasty_remove_admin_menus' );
 
@@ -65,17 +62,17 @@ add_action( 'admin_menu', 'tasty_remove_dashboard_widgets' );
  *
  * @since 2.0.0
  */
-function tasty_remove_widgets() { 
+function tasty_remove_widgets() {
 	unregister_widget( 'WP_Widget_Pages'           );
 	unregister_widget( 'WP_Widget_Calendar'        );
 	unregister_widget( 'WP_Widget_Links'           );
 	unregister_widget( 'WP_Widget_Meta'            );
 	unregister_widget( 'WP_Widget_Recent_Comments' );
-	unregister_widget( 'WP_Widget_Recent_Posts'    );
-	unregister_widget( 'WP_Widget_Categories'      );	
-	unregister_widget( 'WP_Widget_Search'          );
-	unregister_widget( 'WP_Nav_Menu_Widget'        );
-	unregister_widget( 'WP_Widget_Tag_Cloud'       );
+	// unregister_widget( 'WP_Widget_Recent_Posts'    );
+	// unregister_widget( 'WP_Widget_Categories'      );
+	// unregister_widget( 'WP_Widget_Search'          );
+	// unregister_widget( 'WP_Nav_Menu_Widget'        );
+	// unregister_widget( 'WP_Widget_Tag_Cloud'       );
 }
 add_action( 'widgets_init', 'tasty_remove_widgets', 1 );
 
@@ -85,7 +82,7 @@ add_action( 'widgets_init', 'tasty_remove_widgets', 1 );
  * @since 2.0.0
  */
 function tasty_remove_wordpress_metaboxes(){
-	remove_meta_box( 'categorydiv',      'post', 'side'   ); // categories
+	// remove_meta_box( 'categorydiv',      'post', 'side'   ); // categories
 	remove_meta_box( 'postcustom',       'post', 'normal' ); // custom fields
 	remove_meta_box( 'postexcerpt',      'post', 'normal' ); // exerpt
 	remove_meta_box( 'commentstatusdiv', 'post', 'normal' ); // comments status

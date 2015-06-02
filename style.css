@@ -1,4 +1,4 @@
-/* @override 
+/* @override
 	http://links.jaredatchison.com/wp-content/themes/EA-Genesis-Child-master/style.css?ver=2.0.0 */
 
 /*
@@ -56,7 +56,7 @@ input[type="search"] {
 .wrap:after {
 	clear: both;
 	content: " ";
-	display: table;	
+	display: table;
 }
 
 
@@ -76,12 +76,12 @@ body {
 }
 
 a {
-	color: #06c;
+	color: #00a0d2;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #f77411;
+	color: #ff5b2a;
 }
 
 p {
@@ -190,30 +190,30 @@ input:hover[type="submit"] {
 /* Tag Autocompletion
 ------------------------------------------------------------ */
 
-.ac_results { 
-	padding: 0; 
-	margin: 0; 
-	list-style: none; 
-	position: absolute; 
-	z-index: 10000; 
-	display: none; 
+.ac_results {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: absolute;
+	z-index: 10000;
+	display: none;
 	border: 1px solid #ccc;
-	background: #fff; 
+	background: #fff;
 	width: 180px;
 }
 
-.ac_results li { 
-	padding: 2px 5px; 	
-	white-space: nowrap; 
-	text-align: left; 
+.ac_results li {
+	padding: 2px 5px;
+	white-space: nowrap;
+	text-align: left;
 }
 
-.ac_over { 
-	cursor: pointer; 
+.ac_over {
+	cursor: pointer;
 }
 
-.ac_match { 
-	text-decoration: underline; 
+.ac_match {
+	text-decoration: underline;
 }
 
 
@@ -401,20 +401,26 @@ img.alignright,
 	text-transform: uppercase;
 }
 
-.entry-tags {
+.entry-categories, .entry-tags {
 	float: right;
 }
 
-.entry-tags a {
+.entry-tags:before {
+	content: ' | ';
+	padding: 0 .25em;
+}
+
+.entry-categories a, .entry-tags a {
 	background: #eee;
 	color: #333;
 	display: inline-block;
 	font-size: 11px;
 	line-height: 1;
 	padding: 5px;
+	margin: 0 .25em 0;
 }
 
-.entry-tags a:hover {
+.entry-categories a:hover, .entry-tags a:hover {
 	background: #333;
 	color: #fff;
 }
@@ -444,14 +450,27 @@ img.alignright,
 	vertical-align: baseline;
 }
 
-#tag-search {
+.term-search {
 	float: left;
 	width: 50%;
 }
 
+#category-search {
+	margin-top: 10px;
+}
+
+.term-search .select2-container, .term-search select {
+	display: block;
+	width: 100%;
+	margin-bottom: .5em;
+}
+
+.term-search select {
+	padding: 8px;
+	height: 28px;
+}
+
 .quick-bar #tag {
-	width: 180px;
-	margin-left: 5px;
 	vertical-align: baseline;
 }
 
@@ -482,7 +501,7 @@ img.alignright,
 }
 
 .pagination a {
-	background-color: #06c;
+	background-color: #00a0d2;
 	color: #fff;
 	cursor: pointer;
 	display: inline-block;
@@ -563,12 +582,12 @@ h4.widget-title {
 }
 
 @media only screen and (max-width: 767px) {
-	
+
 	.content {
 		float: none;
 		width: 100%;
 	}
-	
+
 	.sidebar {
 		float: none;
 		width: 100%;
@@ -582,29 +601,29 @@ h4.widget-title {
 	.entry-title {
 		font-size: 13px;
 	}
-	
+
 	.site-inner {
 		padding: 10px 0;
 	}
-	
+
 	.site-header .wrap {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
-	
+
 	.site-title {
 		width: 100%;
 		float: none;
 		text-align: center;
 		font-size: 22px;
 	}
-	
+
 	.site-header .search-form {
 		width: 100%;
 		float: none;
 		padding-top: 5px;
 	}
-	
+
 	.site-header .search-form input[type="search"],
 	.site-header .search-form input[type="text"] {
 		margin: 0 auto;
@@ -612,14 +631,32 @@ h4.widget-title {
 		float: none;
 		width: 85%;
 	}
-	
+
 	.entry {
 		padding: 5px 0;
 	}
-	
+
 	.pagination a {
 		font-size: 12px;
 		padding: 5px 10px;
 	}
 
+}
+
+
+.widget_categories li {
+	background: rgba(0, 160, 210, 0.1);
+	/*background: red;*/
+	padding-left: 10px;
+
+	position: relative;
+	display: block;
+	cursor: pointer;
+	margin: 0;
+}
+.widget_categories li a {
+	display: block;
+	padding: 10px 0 11px 18px;
+	border-bottom: 1px solid #ddd;
+	background: #fff;
 }

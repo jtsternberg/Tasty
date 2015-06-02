@@ -13,12 +13,12 @@
  * Query tweaks via pre_get_posts
  *
  * Instead of only showing 10 posts by default (bookmarks), show 100.
- * 
+ *
  * @since 2.0.0
  * @param object $query
  */
 function tasty_pre_get_posts_tweaks( $query ) {
-	if ( $query->is_main_query() && !is_admin() ) {
+	if ( $query->is_main_query() && ! is_admin() ) {
 		$query->set( 'posts_per_page', '100' );
 	}
 }
@@ -46,7 +46,7 @@ add_action( 'genesis_entry_header', 'tasty_post_date', 1 );
 function tasty_post_class( $classes ) {
 	global $currentday, $previousday;
 	if ( $currentday == $previousday ) {
-		$classes[] = "same-day";
+		$classes[] = 'same-day';
 	}
 	return $classes;
 }
@@ -62,37 +62,25 @@ add_filter( 'post_class', 'tasty_post_class' );
 function tasty_entry_meta( $post_meta ) {
 
 	// Tags shortcode
-	$post_meta = '[post_tags sep=" " before=""]';
+	$post_meta = ' [post_tags sep=" " before=""] [post_categories sep=" " before=""]';
 
 	// Add links to modify the post if user has access
 	if ( current_user_can( 'edit_post', get_the_ID() ) ) {
 		$links     = '<a href="' . get_edit_post_link() . '" class="edit">' . __( 'Edit', 'ja-tasty-child' ) . '</a>';
 		$links    .= ' | <a href="' . get_delete_post_link( get_the_ID(), '', false ) . '" class="delete">' . __( 'Delete', 'ja-tasty-child' ) . '</a>';
 		$post_meta = $links . $post_meta;
-	} 
+	}
 
 	return $post_meta;
 }
 add_filter( 'genesis_post_meta', 'tasty_entry_meta' );
 
-/**
- * Shortcut to grab the custom fields
- *
- * @since  2.0.0
- * @param  string $field
- * @global array $post
- * @return false or string
- */
-function tasty_get_custom_field( $field ) {
-	global $post;
-	$value = get_post_meta( $post->ID, $field, true );
-	if ( $value ) return $value ;
-	else return false;
-}
-
 function tasty_tag_archive() {
-	if ( is_archive() )
-		echo '<h1 class="archive-title">' .  __( 'Tag Archives: ', 'ja-tasty-child' ) . '<em>' . single_tag_title( '', false ) . '</em></h1>';
+	if ( is_tag() ) {
+		echo '<h1 class="archive-title">' .  __( 'Bookmark Tag: ', 'ja-tasty-child' ) . '<em>' . single_tag_title( '', false ) . '</em></h1>';
+	} elseif ( is_category() ) {
+		echo '<h1 class="archive-title">' .  __( 'Bookmark Category: ', 'ja-tasty-child' ) . '<em>' . single_tag_title( '', false ) . '</em></h1>';
+	}
 }
 add_action( 'genesis_before_loop', 'tasty_tag_archive', 1 );
 
@@ -105,10 +93,18 @@ add_action( 'genesis_before_loop', 'tasty_tag_archive', 1 );
 function tasty_tag_search_area(){
 	?>
 	<div class="quick-bar">
-		<form action="<?php echo site_url(); ?>/" method="POST" id="tag-search">
-			<?php _e( 'Search Tags', 'ja-tasty-child' ); ?>
-			<input type="text" name="tag" id="tag" class="tagsearchfield input-small" autocomplete="off" onfocus="setSuggest('tag');" placeholder="<?php _e( 'enter a tag', 'ja-tasty-child' ); ?>" >		
-		</form>		
+		<!-- <form action="<?php echo site_url(); ?>/" method="POST" id="tag-search" class="term-search">
+			<input type="text" name="tag" id="tag" class="tagsearchfield input-small" autocomplete="off" onfocus="setSuggest('tag');" placeholder="<?php _e( 'enter a tag', 'ja-tasty-child' ); ?>" >
+		</form>
+		<br> -->
+		<form style="clear:both;" action="<?php echo site_url(); ?>/" method="POST" id="category-search" class="term-search">
+			<select name="tag" id="post_tag" class="tagsearchfield" placeholder="<?php _e( 'enter a tag', 'ja-tasty-child' ); ?>" >
+				<option value=""><?php _e( 'enter a tag', 'ja-tasty-child' ); ?></option>
+			</select>
+			<select name="category" id="category" class="categorysearchfield" placeholder="<?php _e( 'enter a category', 'ja-tasty-child' ); ?>" >
+				<option value=""><?php _e( 'enter a category', 'ja-tasty-child' ); ?></option>
+			</select>
+		</form>
 		<div class="total-posts">
 			<?php echo is_home() ? __( 'Total Bookmarks', 'ja-tasty-child' ) : __( 'Bookmarks', 'ja-tasty-child' ); ?>
 			<span class="count"><?php global $wp_query; echo ( is_home() ? wp_count_posts()->publish : $wp_query->found_posts ); ?></span>
@@ -130,7 +126,7 @@ function tasty_trash_alert(){
 	if ( isset( $_GET['trashed'] ) ) {
 		echo '<p class="notice">';
 		$trash_post = get_post( $_GET['ids'] );
-		printf( __( '<em>%s</em> has been moved to the <a href="%s">trash</a>.', 'ja-tasty-child' ), $trash_post->post_title, get_option( 'site_url' ).'/wp-admin/edit.php?post_status=trash&post_type=post' );
+		printf( __( '<em>%s</em> has been moved to the <a href="%s">trash</a>.', 'ja-tasty-child' ), $trash_post->post_title, admin_url( '/edit.php?post_status=trash&post_type=post' ) );
 		echo '</p>';
 	}
 }
@@ -144,7 +140,7 @@ add_action( 'genesis_before_loop', 'tasty_trash_alert', 2 );
  */
 function tasty_redirect_on_single() {
 	if ( is_single() ) {
-		$url = tasty_get_custom_field( '_tasty_link' );
+		$url = esc_url( tasty_display_url( false ) );
 		if ( empty( $url ) ) {
 			wp_redirect( site_url() );
 		} else {
@@ -203,8 +199,9 @@ add_filter( 'genesis_footer_creds_text', 'tasty_footer_creds_text' );
  * @return array Amended request arguments
  */
 function tasty_dont_update_theme( $r, $url ) {
-	if ( 0 !== strpos( $url, 'http://api.wordpress.org/themes/update-check' ) )
+	if ( 0 !== strpos( $url, 'http://api.wordpress.org/themes/update-check' ) ) {
 		return $r; // Not a theme update request. Bail immediately.
+	}
 	$themes = unserialize( $r['body']['themes'] );
 	unset( $themes[ get_option( 'template' ) ] );
 	unset( $themes[ get_option( 'stylesheet' ) ] );
@@ -212,3 +209,38 @@ function tasty_dont_update_theme( $r, $url ) {
 	return $r;
 }
 add_filter( 'http_request_args', 'tasty_dont_update_theme', 5, 2 );
+
+function tasty_mod_title_output( $title ) {
+
+	$url = esc_attr( tasty_display_url( false ) );
+	$title_attr = 'title="'. $url .'"';
+
+	$title = str_replace( 'class="entry-title"', 'class="entry-title" '. $title_attr, $title );
+
+	if ( false !== strpos( $url, 'javascript:' ) ) {
+		$bookmarklet = '<a title="Bookmarklet -- Drag to your Bookmark Bar" href="'. $url .'">[##]</a> ';
+		$title = str_replace( '><a', '>'. $bookmarklet .'<a', $title );
+
+	}
+	return $title;
+}
+add_filter( 'genesis_post_title_output', 'tasty_mod_title_output' );
+
+function tasty_prev_link_text( $text ) {
+	$text = '&Larr; ' . __( 'Previous Page', 'ja-tasty-child' );
+	return $text;
+}
+add_filter( 'genesis_prev_link_text', 'tasty_prev_link_text' );
+
+function tasty_next_link_text( $text ) {
+	$text = __( 'Next Page', 'ja-tasty-child' ) . ' &Rarr;';
+	return $text;
+}
+add_filter( 'genesis_next_link_text', 'tasty_next_link_text' );
+
+
+function tasty_breadcrumb_args( $args ) {
+	$args['labels']['category'] = $args['labels']['tag'] = __( 'Bookmarks under ', 'ja-tasty-child' );
+	return $args;
+}
+add_filter( 'genesis_breadcrumb_args', 'tasty_breadcrumb_args' );
