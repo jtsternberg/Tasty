@@ -176,6 +176,7 @@ function tasty_link_metabox_save_post( $post_id, $post ){
 	if (
 		'post' != $post->post_type
 		|| defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE
+		|| ! isset( $_POST['tasty_noncename'] )
 		|| ! wp_verify_nonce( $_POST['tasty_noncename'], 'tasty_link' )
 		|| ! current_user_can( 'edit_post', $post_id )
 	) {
