@@ -345,6 +345,90 @@ img.alignright,
 	float: right;
 }
 
+/* Press this styles */
+
+.pressthis h4 {
+	margin: 2em 0 1em;
+}
+
+.pressthis textarea {
+	width: 100%;
+	font-size: 1em;
+}
+
+#pressthis-code-wrap {
+	overflow: auto;
+}
+
+.pressthis-bookmarklet-wrapper {
+	margin: 20px 0 8px;
+	vertical-align: top;
+	position: relative;
+	z-index: 1;
+}
+
+.pressthis-bookmarklet,
+.pressthis-bookmarklet:hover,
+.pressthis-bookmarklet:focus,
+.pressthis-bookmarklet:active {
+	display: inline-block;
+	position: relative;
+	cursor: move;
+	color: #32373c;
+	background: #e5e5e5;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #b4b9be;
+	font-style: normal;
+	line-height: 16px;
+	font-size: 14px;
+	text-decoration: none;
+}
+
+.pressthis-bookmarklet:active {
+	outline: none;
+}
+
+.pressthis-bookmarklet:after {
+	content: "";
+	width: 70%;
+	height: 55%;
+	z-index: -1;
+	position: absolute;
+	right: 10px;
+	bottom: 9px;
+	background: transparent;
+	-webkit-transform: skew(20deg) rotate(6deg);
+	-ms-transform: skew(20deg) rotate(6deg);
+	transform: skew(20deg) rotate(6deg);
+	-webkit-box-shadow: 0 10px 8px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 10px 8px rgba(0, 0, 0, 0.6);
+}
+
+.pressthis-bookmarklet:hover:after {
+	-webkit-transform: skew(20deg) rotate(9deg);
+	-ms-transform: skew(20deg) rotate(9deg);
+	transform: skew(20deg) rotate(9deg);
+	-webkit-box-shadow: 0 10px 8px rgba(0, 0, 0, 0.7);
+	box-shadow: 0 10px 8px rgba(0, 0, 0, 0.7);
+}
+
+.pressthis-bookmarklet span {
+	display: inline-block;
+	margin: 0px 0 0;
+	padding: 0px 12px 8px 9px;
+}
+
+.pressthis-bookmarklet span:before {
+	color: #72777c;
+	font: normal 20px/1 dashicons;
+	content: "\f157";
+	position: relative;
+	display: inline-block;
+	top: 4px;
+	margin-right: 4px;
+}
+
 /* Content Area
 ---------------------------------------------------------------------------------------------------- */
 

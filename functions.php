@@ -32,6 +32,7 @@ function tasty_child_theme_setup() {
 	require_once( get_stylesheet_directory() . '/inc/admin.php'             ); // Admin-side customizations
 	require_once( get_stylesheet_directory() . '/inc/general.php'           ); // General functions and actions
 	require_once( get_stylesheet_directory() . '/inc/autocomplete.php'      ); // Tag autocomplete
+	require_once( get_stylesheet_directory() . '/inc/press-this-widget.php' );
 	// require_once( get_stylesheet_directory() . '/inc/bookmark-this.php'     ); // Custom bookmarklet
 
 	// Theme Supports

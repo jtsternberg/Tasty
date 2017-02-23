@@ -218,7 +218,7 @@ function tasty_mod_title_output( $title ) {
 	$title = str_replace( 'class="entry-title"', 'class="entry-title" '. $title_attr, $title );
 
 	if ( false !== strpos( $url, 'javascript:' ) ) {
-		$bookmarklet = '<a title="Bookmarklet -- Drag to your Bookmark Bar" href="'. $url .'">[##]</a> ';
+		$bookmarklet = '<a title="' . __( 'Bookmarklet -- Drag to your Bookmark Bar', 'ja-tasty-child' ) . '" href="'. $url .'">[##]</a> ';
 		$title = str_replace( '><a', '>'. $bookmarklet .'<a', $title );
 
 	}
