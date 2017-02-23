@@ -74,13 +74,14 @@ add_action( 'init', 'tasty_change_post_object_label' );
  * @return array
  */
 function tasty_post_edit_columns( $columns ) {
-	$columns = array(
-		'cb'       => '<input type="checkbox" />',
-		'title'    => __( 'Title',      'ja-tasty-child' ),
-		'link_url' => __( 'Link',       'ja-tasty-child' ),
-		'tags'     => __( 'Tags',       'ja-tasty-child' ),
-		'date'     => __( 'Date Added', 'ja-tasty-child' )
-	);
+	unset( $columns['author'], $columns['comments'] );
+
+	$columns['date']     = __( 'Date Added', 'ja-tasty-child' );
+	$offset              = array_search( 'categories', array_keys( $columns ) );
+	$rest                = array_splice( $columns, $offset );
+	$columns['link_url'] = __( 'Link', 'ja-tasty-child' );
+	$columns             += $rest;
+
 	return $columns;
 }
 add_action( 'manage_edit-post_columns', 'tasty_post_edit_columns' );
