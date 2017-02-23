@@ -93,10 +93,6 @@ add_action( 'genesis_before_loop', 'tasty_tag_archive', 1 );
 function tasty_tag_search_area(){
 	?>
 	<div class="quick-bar">
-		<!-- <form action="<?php echo site_url(); ?>/" method="POST" id="tag-search" class="term-search">
-			<input type="text" name="tag" id="tag" class="tagsearchfield input-small" autocomplete="off" onfocus="setSuggest('tag');" placeholder="<?php _e( 'enter a tag', 'ja-tasty-child' ); ?>" >
-		</form>
-		<br> -->
 		<form style="clear:both;" action="<?php echo site_url(); ?>/" method="POST" id="category-search" class="term-search">
 			<select name="tag" id="post_tag" class="tagsearchfield" placeholder="<?php _e( 'enter a tag', 'ja-tasty-child' ); ?>" >
 				<option value=""><?php _e( 'enter a tag', 'ja-tasty-child' ); ?></option>

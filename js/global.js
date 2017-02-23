@@ -34,7 +34,7 @@ window.Tasty = window.Tasty || {};
 				},
 				processResults: app.handle_results,
 			}
-		}
+		};
 	};
 	// Handle setting up our ajax data
 	// app.select2_ajax_data = ;
@@ -44,7 +44,7 @@ window.Tasty = window.Tasty || {};
 
 		// return early on ajax failure, undefined data, or empty data
 		if ( ! response.success || ! response.data || ! response.data.length ) {
-			console.warn( 'app.handle_results response.data', response.data );
+			console.warn( 'app.handle_results response.data', response );
 			return { results: [] };
 		}
 
