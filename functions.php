@@ -36,7 +36,7 @@ function tasty_child_theme_setup() {
 	// require_once( get_stylesheet_directory() . '/inc/bookmark-this.php'     ); // Custom bookmarklet
 
 	// Theme Supports
-	add_theme_support( 'html5' );
+	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) ); // Pass explicit types (WP 7.0 flags the bare call).
 	add_theme_support( 'genesis-responsive-viewport' );
 	add_theme_support( 'genesis-structural-wraps', array( 'header', 'site-inner', 'footer' ) );
 
